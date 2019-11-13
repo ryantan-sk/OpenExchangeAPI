@@ -27,11 +27,13 @@ class OpenExchange:
         else:
             convert_to_USD = amount / input_rate
             output_amount = convert_to_USD * output_rate
-        return output_amount
+
+        final_output = str(round(output_amount,2))
+        return final_output
 
     def get_usage(self):
         data = requests.get(f"{self.usage}{self.app_id}").json()
-        stats = data["usage"]
+        stats = data["data"]["usage"]
 
         completed_request = stats["requests"]
         remaining_request = stats["requests_remaining"]
@@ -42,15 +44,6 @@ class OpenExchange:
 
     def get_all_currencies(self):
         data = requests.get(f"{self.currencies}").json()
-        return data
+        currencies = [f"{key} ({data[key]})" for key in data]
 
-
-APP_ID = "8812fb8e3ec9476e8a164b511b20236c"
-
-test = OpenExchange(APP_ID)
-print(test.get_all_currencies())
-print(test.get_usage())
-print(test.convert(100, "USD", "GBP"))
-print(test.convert(100,"GBP", "MYR"))
-
-
+        return currencies
